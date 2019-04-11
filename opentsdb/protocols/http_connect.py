@@ -13,8 +13,12 @@ logger = logging.getLogger('opentsdb-py')
 class TSDBUrls:
 
     def __init__(self, host: str, port: int):
-        self.version = 'http://%s:%s/api/version' % (host, port)
-        self.put = 'http://%s:%s/api/put?details=true' % (host, port)
+        if port == 80:# don't add port to host so that it's working with kubernetes deployed opentsdb
+            self.version = '%s/api/version' % (host)
+            self.put = '%s/api/put?details=true' % (host)
+        else:
+            self.version = 'http://%s:%s/api/version' % (host, port)
+            self.put = 'http://%s:%s/api/put?details=true' % (host, port)
 
 
 class HttpTSDBConnect(TSDBConnect):
